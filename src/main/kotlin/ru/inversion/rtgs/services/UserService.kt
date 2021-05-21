@@ -33,7 +33,8 @@ class UserService @Autowired constructor(private val userRepository: UserReposit
                 userIn.bank_id,
                 userIn.eName,
                 userIn.login,
-                passwordEncoder.encode(userIn.password)
+                passwordEncoder.encode(userIn.password),
+                listOf()
                 )
         user.roles.add(ERole.ROLE_USER)
 

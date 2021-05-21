@@ -12,15 +12,15 @@ import javax.persistence.*
 data class RtgsBank(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long,
+        val id: Long? = null,
         @Column(nullable = false,unique = true)
-        val bik: String,
-        val bankAdress: String?,
+        val bik: String? = "",
+        val bankAdress: String? = "",
         @Column(nullable = false)
-        val bankName: String,
+        val bankName: String? = "",
 
         @OneToMany(mappedBy = "bank_id", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
-        val rtgsUsers: Collection<RtgsUser>?
-
-
-)
+        val rtgsUsers: Collection<RtgsUser>? = null
+){
+        constructor() : this(null,"","","", null) {}
+}

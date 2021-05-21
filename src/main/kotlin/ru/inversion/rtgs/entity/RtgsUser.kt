@@ -32,10 +32,10 @@ data class RtgsUser(
         @Column(nullable = false)
         private var password: String,
         @Transient
-        private var authorities: List<GrantedAuthority?>? = null
+        private var authorities: List<GrantedAuthority?>
 ) : UserDetails {
 
-    constructor() : this(null,null,"","","",null) {}
+    constructor() : this(null,null,"","","", listOf()) {}
 
     @ElementCollection(targetClass = ERole::class,fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = [JoinColumn(name = "user_id")])
@@ -45,8 +45,8 @@ data class RtgsUser(
     @Column(updatable = false)
     var createdDate: LocalDateTime? = null
 
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        return this.authorities as MutableCollection<out GrantedAuthority>
+    override fun getAuthorities(): List<out GrantedAuthority>? {
+        return this.authorities as List<out GrantedAuthority>
     }
 
     @PrePersist
