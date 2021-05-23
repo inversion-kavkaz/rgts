@@ -2,18 +2,25 @@ package ru.inversion.rtgs.services
 
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import ru.inversion.rtgs.dto.UserDTO
 import ru.inversion.rtgs.entity.RtgsUser
 import ru.inversion.rtgs.entity.enums.ERole
 import ru.inversion.rtgs.exceptions.UserExistException
+import ru.inversion.rtgs.facade.UserFacade
 import ru.inversion.rtgs.payload.request.SignupRequest
 import ru.inversion.rtgs.repository.UserRepository
 import java.security.Principal
 
 @Service
-class UserService @Autowired constructor(private val userRepository: UserRepository, private val passwordEncoder: BCryptPasswordEncoder) {
+class UserService @Autowired constructor(private val userRepository: UserRepository,
+                                         private val passwordEncoder: BCryptPasswordEncoder,
+                                         private val userFacade: UserFacade) {
+
     fun getCurrentUser(principal: Principal): RtgsUser {
         return getUserByPrincipal(principal)
     }
@@ -22,6 +29,11 @@ class UserService @Autowired constructor(private val userRepository: UserReposit
         val userlogin = principal.name
         return userRepository.findRtgsUserByLogin(userlogin)
                 .orElseThrow { UsernameNotFoundException("User not found with login $userlogin") }
+    }
+
+    fun getUserByLogin(login: String): RtgsUser {
+        return userRepository.findRtgsUserByLogin(login)
+                .orElseThrow { UsernameNotFoundException("User not found with login $login")}
     }
 
     fun getUserById(id: Long): RtgsUser {
@@ -39,12 +51,18 @@ class UserService @Autowired constructor(private val userRepository: UserReposit
         user.roles.add(ERole.ROLE_USER)
 
         return try {
-            LOG.info("Saving User {} $userIn.eName" )
+            LOG.info("Saving User {} ${userIn.login}" )
             userRepository.save(user)
         } catch (e: Exception) {
             LOG.error("Error during registration. {}", e.message)
-            throw UserExistException("The user " + user.getUsername().toString() + " already exist. Please check credentials")
+            throw UserExistException("The user ${user.login} already exist. Please change new login")
         }
+    }
+
+    fun updateUser(userDTO: UserDTO,principal: Principal) : RtgsUser {
+        val bdUser : RtgsUser  = getUserByPrincipal(principal)
+        bdUser.EName = userDTO.EName
+        return userRepository.save(bdUser)
     }
 
     companion object {

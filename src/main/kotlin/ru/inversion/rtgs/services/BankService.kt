@@ -1,6 +1,7 @@
 package ru.inversion.rtgs.services
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import ru.inversion.rtgs.dto.BankDTO
 import ru.inversion.rtgs.entity.RtgsBank
@@ -19,4 +20,6 @@ class BankService @Autowired constructor(private val bankRepository: BankReposit
     fun getAllBanksFullInformation() : List<RtgsBank>? {
         return bankRepository.findAll()
     }
+
+    fun getById(bankId: Long): RtgsBank? = bankRepository.findByIdOrNull(bankId)
 }

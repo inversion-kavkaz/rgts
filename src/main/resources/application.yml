@@ -1,13 +1,13 @@
 server:
-  ssl:
-      key-store-type: PKCS12
-      key-store: classpath:keystore.p12
-      key-store-password: xdwxdw123
-      key-alias: tomcat
+#  ssl:
+#      key-store-type: PKCS12
+#      key-store: classpath:keystore.p12
+#      key-store-password: xdwxdw123
+#      key-alias: tomcat
   port: 5000
 spring:
   datasource:
-    url: jdbc:oracle:thin:@172.16.0.105:1521:odb12
+    url: jdbc:oracle:thin:@192.168.0.25:1521:odb12
     username: XXI
     password: NEW8I
     driver-class-name: oracle.jdbc.OracleDriver

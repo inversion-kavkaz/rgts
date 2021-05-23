@@ -8,47 +8,47 @@ import javax.persistence.*
 data class RtgsTrn(
         @Id
        @GeneratedValue(strategy = GenerationType.IDENTITY)
-       private val id: Long?,
+       val id: Long?,
         /**Номер ЭС в течение опердня.*/
        @Column(nullable = false,updatable = false)
-       private val EDNo: Long?,
+       val EDNo: Long?,
         /**Уникальный идентификатор составителя ЭС */
        @Column(nullable = false,updatable = false)
-       private val EDAuthor: String?,
+       val EDAuthor: String?,
         /**Уникальный идентификатор получателя ЭС */
        @Column(nullable = false,updatable = false)
-       private val EDReceiver: String?,
+       val EDReceiver: String?,
         /**Вид операции*/
-       private val TransKind: String?,
+       val TransKind: String?,
         /**Очередность платежа*/
-       private val Priority: Long? = 1,
+       val Priority: Long? = 1,
 
         /**Сумма платежа*/
        @Column(nullable = false,updatable = false)
-       private val Sum: Long? = 0,
+       val Sum: Long? = 0,
 
         /**Номер счета плательщика*/
        @Column(nullable = false,updatable = false)
-       private val PayerPersonalAcc: String?,
+       val PayerPersonalAcc: String?,
         /**ИНН плательщика*/
        @Column(nullable = false,updatable = false)
-       private val PayerINN: String?,
+       val PayerINN: String?,
         /**Номер счета банка плательщика */
        @Column(nullable = false,updatable = false)
-       private val PayerCorrespAcc: String?,
+       val PayerCorrespAcc: String?,
 
         /**Номер счета получателя*/
        @Column(nullable = false,updatable = false)
-       private val PayeePersonalAcc: String?,
+       val PayeePersonalAcc: String?,
         /**ИНН получателя*/
        @Column(nullable = false,updatable = false)
-       private val PayeeINN: String?,
+       val PayeeINN: String?,
         /**Номер счета банка получателя */
        @Column(nullable = false,updatable = false)
-       private val PayeeCorrespAcc: String?,
+       val PayeeCorrespAcc: String?,
         /**Id отправителя из таблицы сотрудников банка */
         @Column(nullable = false,updatable = false)
-       private val userId: Long?
+       val userId: Long?
 
 
 ){

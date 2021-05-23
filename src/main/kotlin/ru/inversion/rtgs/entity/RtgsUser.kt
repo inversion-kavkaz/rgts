@@ -26,10 +26,10 @@ data class RtgsUser(
         @Column(nullable = false)
         val bank_id: Long? = null,
         @Column(nullable = false)
-        val EName: String? = "",
-        @Column(nullable = false)
+        var EName: String? = "",
+        @Column(nullable = false,unique = true)
         val login: String? = null,
-        @Column(nullable = false)
+        @Column(nullable = false,length = 3000)
         private var password: String,
         @Transient
         private var authorities: List<GrantedAuthority?>
@@ -39,7 +39,7 @@ data class RtgsUser(
 
     @ElementCollection(targetClass = ERole::class,fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = [JoinColumn(name = "user_id")])
-    val roles: MutableSet<ERole> = mutableSetOf()
+    var roles: MutableSet<ERole> = mutableSetOf()
 
     @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
     @Column(updatable = false)

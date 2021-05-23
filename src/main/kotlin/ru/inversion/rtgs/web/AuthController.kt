@@ -9,12 +9,16 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.util.ObjectUtils
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
+import ru.inversion.rtgs.dto.BankDTO
+import ru.inversion.rtgs.facade.BankFacade
+import ru.inversion.rtgs.facade.UserFacade
 import ru.inversion.rtgs.payload.reponse.JWTTokenSuccessResponse
 import ru.inversion.rtgs.payload.reponse.MessageResponse
 import ru.inversion.rtgs.payload.request.LoginRequest
 import ru.inversion.rtgs.payload.request.SignupRequest
 import ru.inversion.rtgs.security.JWTTokenProvider
 import ru.inversion.rtgs.security.SecurityConstants
+import ru.inversion.rtgs.services.BankService
 import ru.inversion.rtgs.services.UserService
 import ru.inversion.rtgs.validations.ResponseErrorValidation
 import javax.validation.Valid
@@ -32,6 +36,13 @@ class AuthController {
     private val responseErrorValidation: ResponseErrorValidation? = null
     @Autowired
     private val userService: UserService? = null
+    @Autowired
+    private val userFacade: UserFacade? = null
+    @Autowired
+    private val bankFacade: BankFacade? = null
+    @Autowired
+    private val bankService: BankService? = null
+
 
     @PostMapping("/signin")
     fun authenticateUser(@RequestBody loginRequest: @Valid LoginRequest?, bindingResult: BindingResult?): ResponseEntity<Any>? {
@@ -43,7 +54,9 @@ class AuthController {
         ))
         SecurityContextHolder.getContext().authentication = authentication
         val jwt = SecurityConstants.TOKEN_PREFIX + jwtTokenProvider!!.generateToken(authentication)
-        return ResponseEntity.ok(JWTTokenSuccessResponse(true, jwt))
+        val user = loginRequest.login?.let { userService?.getUserByLogin(it)?.let { it1 -> userFacade?.userTOUserDTO(it1) } }
+        val bank: BankDTO? = user?.bank_id?.let { bankService?.getById(it)?.let { bankFacade?.bankToBankDTO(it) } }
+        return ResponseEntity.ok(user?.let { JWTTokenSuccessResponse(true, jwt, it, bank) })
     }
 
     @PostMapping("/signup")
