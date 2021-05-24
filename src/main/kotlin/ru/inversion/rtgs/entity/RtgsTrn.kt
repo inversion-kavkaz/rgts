@@ -1,9 +1,10 @@
 package ru.inversion.rtgs.entity
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import lombok.Data
 import java.time.LocalDateTime
 import javax.persistence.*
-
+@Data
 @Entity
 data class RtgsTrn(
         @Id
@@ -50,11 +51,11 @@ data class RtgsTrn(
         @Column(nullable = false,updatable = false)
        val userId: Long?,
         /**Назначение платежа */
-       val purpose: String?
-
-
-
-
+       val purpose: String?,
+        /**Дата составления ЭС*/
+        @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
+        @Column(updatable = false)
+        var edDate: LocalDateTime? = null
 ){
 
        constructor(): this(
@@ -75,10 +76,6 @@ data class RtgsTrn(
                null
        )
 
-       /**Дата составления ЭС*/
-       @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
-       @Column(updatable = false)
-       var edDate: LocalDateTime? = null
 
        @PrePersist
     fun onCreate(){

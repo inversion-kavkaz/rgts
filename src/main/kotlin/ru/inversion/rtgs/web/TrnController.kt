@@ -52,12 +52,13 @@ class TrnController @Autowired constructor(private val trnSrevice: TrnService,
     }
 
     @PostMapping("/getAll")
-    fun getAllByDate(@RequestBody date: TrnRequest, bindingResult: BindingResult, principal: Principal): ResponseEntity<Any>? {
-        val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
-        if (!ObjectUtils.isEmpty(errors)) return errors
+    fun getAllByDate(@RequestBody date: TrnRequest, bindingResult: BindingResult, principal: Principal): ResponseEntity<List<RtgsTrn>>? {
+//        val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
+//        if (!ObjectUtils.isEmpty(errors)) return errors
         var ld: LocalDate? = LocalDate.parse(date.date)
         if(ld == null) ld = LocalDate.now()
-        return ResponseEntity(ld?.let { trnRepository.getAllByDate(it) },HttpStatus.OK)
+        val tl: MutableList<RtgsTrn>? = ld?.let { trnRepository.getAllByDate(it) }
+        return ResponseEntity(tl,HttpStatus.OK)
     }
 
 }
