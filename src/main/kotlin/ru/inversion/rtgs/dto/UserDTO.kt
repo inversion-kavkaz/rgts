@@ -1,6 +1,5 @@
 package ru.inversion.rtgs.dto
 
-import org.springframework.security.core.GrantedAuthority
 import ru.inversion.rtgs.entity.enums.ERole
 import java.time.LocalDateTime
 
@@ -16,5 +15,6 @@ data class UserDTO(
         val EName: String?,
         val login: String?,
         val roles: MutableSet<ERole> = mutableSetOf(),
-        var createdDate: LocalDateTime? = null
+        var createdDate: LocalDateTime? = null,
+        val password : String? = null
 )

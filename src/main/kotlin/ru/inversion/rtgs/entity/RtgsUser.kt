@@ -54,6 +54,11 @@ data class RtgsUser(
         this.createdDate = LocalDateTime.now()
     }
 
+    fun setPassword(pass: String?){
+        if (pass != null) {
+            this.password = pass
+        }
+    }
     /**
      * SECURITY
      */

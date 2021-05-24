@@ -47,11 +47,11 @@ class UserController @Autowired constructor(
         val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
         if (!ObjectUtils.isEmpty(errors)) return errors
 
-        return ResponseEntity(userFacade.userTOUserDTO(userService.updateUser(user,principal)), HttpStatus.OK)
+        return ResponseEntity(userService.updateUser(user,principal)?.let { userFacade.userTOUserDTO(it) }, HttpStatus.OK)
     }
 
     @DeleteMapping("delete/{id}")
-    @ResponseStatus(HttpStatus.OK)
+//    @ResponseStatus(HttpStatus.OK)
     fun deleteUser(@PathVariable id: Long): ResponseEntity<Any> {
         userRepository.deleteById(id)
         return ResponseEntity<Any>(HttpStatus.OK)

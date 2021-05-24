@@ -19,7 +19,8 @@ import java.security.Principal
 @Service
 class UserService @Autowired constructor(private val userRepository: UserRepository,
                                          private val passwordEncoder: BCryptPasswordEncoder,
-                                         private val userFacade: UserFacade) {
+                                         private val userFacade: UserFacade
+                                         ) {
 
     fun getCurrentUser(principal: Principal): RtgsUser {
         return getUserByPrincipal(principal)
@@ -59,10 +60,13 @@ class UserService @Autowired constructor(private val userRepository: UserReposit
         }
     }
 
-    fun updateUser(userDTO: UserDTO,principal: Principal) : RtgsUser {
-        val bdUser : RtgsUser  = getUserByPrincipal(principal)
-        bdUser.EName = userDTO.EName
-        return userRepository.save(bdUser)
+    fun updateUser(userDTO: UserDTO,principal: Principal) : RtgsUser? {
+        val bdUser : RtgsUser? = userDTO.id?.let { getUserById(it) }
+        bdUser?.EName = userDTO.EName
+        bdUser?.roles = userDTO.roles
+        if (!userDTO.password.isNullOrEmpty())
+            bdUser?.password = passwordEncoder.encode(userDTO.password)
+        return bdUser?.let { userRepository.save(it) }
     }
 
     companion object {

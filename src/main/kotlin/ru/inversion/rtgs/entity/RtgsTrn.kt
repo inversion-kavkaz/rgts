@@ -10,59 +10,79 @@ data class RtgsTrn(
        @GeneratedValue(strategy = GenerationType.IDENTITY)
        val id: Long?,
         /**Номер ЭС в течение опердня.*/
-       @Column(nullable = false,updatable = false)
-       val EDNo: Long?,
+       @Column(nullable = false)
+       val edNo: Long?,
         /**Уникальный идентификатор составителя ЭС */
        @Column(nullable = false,updatable = false)
-       val EDAuthor: String?,
+       val edAuthor: String?,
         /**Уникальный идентификатор получателя ЭС */
-       @Column(nullable = false,updatable = false)
-       val EDReceiver: String?,
+       @Column(nullable = false)
+       val edReceiver: String?,
         /**Вид операции*/
-       val TransKind: String?,
+       val transKind: String?,
         /**Очередность платежа*/
-       val Priority: Long? = 1,
+       val priority: Long? = 1,
 
         /**Сумма платежа*/
-       @Column(nullable = false,updatable = false)
-       val Sum: Long? = 0,
+       @Column(nullable = false)
+       val sum: Double? = null,
 
         /**Номер счета плательщика*/
-       @Column(nullable = false,updatable = false)
-       val PayerPersonalAcc: String?,
+       @Column(nullable = false)
+       val payerPersonalAcc: String?,
         /**ИНН плательщика*/
-       @Column(nullable = false,updatable = false)
-       val PayerINN: String?,
+       @Column(nullable = false)
+       val payerINN: String?,
         /**Номер счета банка плательщика */
-       @Column(nullable = false,updatable = false)
-       val PayerCorrespAcc: String?,
+       @Column(nullable = false)
+       val payerCorrespAcc: String?,
 
         /**Номер счета получателя*/
-       @Column(nullable = false,updatable = false)
-       val PayeePersonalAcc: String?,
+       @Column(nullable = false)
+       val payeePersonalAcc: String?,
         /**ИНН получателя*/
-       @Column(nullable = false,updatable = false)
-       val PayeeINN: String?,
+       @Column(nullable = false)
+       val payeeINN: String?,
         /**Номер счета банка получателя */
-       @Column(nullable = false,updatable = false)
-       val PayeeCorrespAcc: String?,
+       @Column(nullable = false)
+       val payeeCorrespAcc: String?,
         /**Id отправителя из таблицы сотрудников банка */
         @Column(nullable = false,updatable = false)
-       val userId: Long?
+       val userId: Long?,
+        /**Назначение платежа */
+       val purpose: String?
+
+
 
 
 ){
 
-       constructor(): this(null,null,null,null,null,null,null,null,null,null,null, null,null,null)
+       constructor(): this(
+               null,
+               null,
+               null,
+               null,
+               null,
+               null,
+               null,
+               null,
+               null,
+               null,
+               null,
+               null,
+               null,
+               null,
+               null
+       )
 
        /**Дата составления ЭС*/
        @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
-       @Column(nullable = false,updatable = false)
-       var EDDate: LocalDateTime? = null
+       @Column(updatable = false)
+       var edDate: LocalDateTime? = null
 
        @PrePersist
     fun onCreate(){
-        this.EDDate = LocalDateTime.now()
+        this.edDate = LocalDateTime.now()
     }
 
 }

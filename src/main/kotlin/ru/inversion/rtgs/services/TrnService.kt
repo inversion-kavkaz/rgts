@@ -19,8 +19,7 @@ class TrnService @Autowired constructor(private val trnRepository: TrnRepository
         return trnRepository.save(trn)
     }
 
-    fun update(trn : RtgsTrn) : RtgsTrn { /**Так не получится*/
-        trnRepository.delete(trn)
+    fun update(trn : RtgsTrn) : RtgsTrn {
         return trnRepository.save(trn)
     }
 
