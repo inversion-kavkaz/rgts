@@ -7,13 +7,16 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.util.ObjectUtils
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
+import ru.inversion.rtgs.dto.TrnDTO
 import ru.inversion.rtgs.entity.RtgsTrn
+import ru.inversion.rtgs.facade.TrnFacade
 import ru.inversion.rtgs.payload.request.TrnRequest
 import ru.inversion.rtgs.repository.TrnRepository
 import ru.inversion.rtgs.services.TrnService
 import ru.inversion.rtgs.validations.ResponseErrorValidation
 import java.security.Principal
 import java.time.LocalDate
+import java.util.stream.Collectors
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
 
@@ -28,14 +31,15 @@ import javax.validation.constraints.NotEmpty
 @PreAuthorize("permitAll()")
 class TrnController @Autowired constructor(private val trnSrevice: TrnService,
                                            private val trnRepository: TrnRepository,
-                                           private val responseErrorValidation: ResponseErrorValidation
+                                           private val responseErrorValidation: ResponseErrorValidation,
+                                           private val trnFacade: TrnFacade
 ) {
 
     @PostMapping("/create")
     fun createTrn(@RequestBody trn: @Valid RtgsTrn, bindingResult: BindingResult, principal: Principal): ResponseEntity<Any>? {
         val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
         if (!ObjectUtils.isEmpty(errors)) return errors
-        return ResponseEntity(trnSrevice.create(trn), HttpStatus.OK)
+        return ResponseEntity(trnFacade.trnToTrnFacade(trnSrevice.create(trn)), HttpStatus.OK)
     }
 
     @PostMapping("/update")
@@ -52,12 +56,17 @@ class TrnController @Autowired constructor(private val trnSrevice: TrnService,
     }
 
     @PostMapping("/getAll")
-    fun getAllByDate(@RequestBody date: TrnRequest, bindingResult: BindingResult, principal: Principal): ResponseEntity<List<RtgsTrn>>? {
-//        val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
-//        if (!ObjectUtils.isEmpty(errors)) return errors
+    fun getAllByDate(@RequestBody date: TrnRequest, bindingResult: BindingResult, principal: Principal): ResponseEntity<Any>? {
+        val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
+        if (!ObjectUtils.isEmpty(errors)) return errors
         var ld: LocalDate? = LocalDate.parse(date.date)
         if(ld == null) ld = LocalDate.now()
-        val tl: MutableList<RtgsTrn>? = ld?.let { trnRepository.getAllByDate(it) }
+        val tl: MutableList<TrnDTO>? = ld?.let {
+            trnRepository.getAllByDate(it)
+                    .stream()
+                    .map{t -> trnFacade.trnToTrnFacade(t)}
+                    .collect(Collectors.toList())
+        }
         return ResponseEntity(tl,HttpStatus.OK)
     }
 
