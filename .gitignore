@@ -19,8 +19,6 @@ target/
 *.iml
 *.ipr
 *.log
-*.yml
-*.p12
 
 ### NetBeans ###
 /nbproject/private/
