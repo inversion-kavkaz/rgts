@@ -56,18 +56,10 @@ class TrnController @Autowired constructor(private val trnSrevice: TrnService,
     }
 
     @PostMapping("/getAll")
-    fun getAllByDate(@RequestBody date: TrnRequest, bindingResult: BindingResult, principal: Principal): ResponseEntity<Any>? {
+    fun getAllByDate(@RequestBody trnReq: TrnRequest, bindingResult: BindingResult, principal: Principal): ResponseEntity<Any>? {
         val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
         if (!ObjectUtils.isEmpty(errors)) return errors
-        var ld: LocalDate? = LocalDate.parse(date.date)
-        if(ld == null) ld = LocalDate.now()
-        val tl: MutableList<TrnDTO>? = ld?.let {
-            trnRepository.getAllByDate(it)
-                    .stream()
-                    .map{t -> trnFacade.trnToTrnFacade(t)}
-                    .collect(Collectors.toList())
-        }
-        return ResponseEntity(tl,HttpStatus.OK)
+        return ResponseEntity(trnSrevice.getAllUserTrnByDate(trnReq),HttpStatus.OK)
     }
 
 }

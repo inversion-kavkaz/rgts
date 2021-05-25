@@ -22,6 +22,10 @@ class TrnFacade {
             trn.payeeCorrespAcc,
             trn.userId,
             trn.purpose,
-            trn.edDate
+            trn.edDate,
+            trn.payerName,
+            trn.payeeName,
+            trn.status,
+            trn.currency
     )
 }

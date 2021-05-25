@@ -52,10 +52,20 @@ data class RtgsTrn(
        val userId: Long?,
         /**Назначение платежа */
        val purpose: String?,
+        /**наименование плательшика*/
+       val payerName: String? = null,
+        /**наименование получателя*/
+       val payeeName: String? = null,
         /**Дата составления ЭС*/
         @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
         @Column(updatable = false)
-        var edDate: LocalDateTime? = null
+        var edDate: LocalDateTime? = null,
+       /**Статус документа*/
+        @Column(updatable = false)
+       val status: Long? = 0,
+       /**Валюта платежа*/
+        @Column(nullable = false)
+       val currency: String? = ""
 ){
 
        constructor(): this(

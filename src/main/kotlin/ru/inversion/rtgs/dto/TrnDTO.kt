@@ -27,5 +27,9 @@ data class TrnDTO (
         val payeeCorrespAcc: String?,
         val userId: Long?,
         val purpose: String?,
-        var edDate: LocalDateTime? = null
-)
+        var edDate: LocalDateTime? = null,
+        val payerName: String? = null,
+        val payeeName: String? = null,
+        val status : Long? = 0,
+        val currency: String?
+        )

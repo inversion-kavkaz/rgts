@@ -10,5 +10,6 @@ data class BankDTO(
         val id: Long?,
         val bik: String?,
         val bankAdress: String? = "",
-        val bankName : String? = ""
+        val bankName : String? = "",
+        val corrAcc : String? = ""
 )

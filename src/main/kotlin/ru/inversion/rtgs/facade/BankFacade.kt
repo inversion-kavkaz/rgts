@@ -12,5 +12,12 @@ import ru.inversion.rtgs.entity.RtgsBank
 
 @Component
 class BankFacade {
-        fun bankToBankDTO(bank: RtgsBank) : BankDTO = BankDTO(bank.id,bank.bik,bank.bankAdress,bank.bankName)
+        fun bankToBankDTO(bank: RtgsBank) : BankDTO
+                = BankDTO(
+                bank.id,
+                bank.bik,
+                bank.bankAdress,
+                bank.bankName,
+                bank.corrAcc
+        )
     }

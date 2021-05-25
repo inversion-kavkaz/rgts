@@ -6,5 +6,8 @@ package ru.inversion.rtgs.payload.request
  * @project rtgs
  */
 
-data class TrnRequest(val date: String){
+data class TrnRequest(
+        val date: String,
+        val user_id: Long
+){
 }
