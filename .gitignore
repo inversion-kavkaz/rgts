@@ -37,5 +37,4 @@ build/
 rtgslog.log
 rtgslog.log.2021-05-21.0.gz
 rtgslog.log.2021-05-22.0.gz
-application.yml
-keystore.p12
+
