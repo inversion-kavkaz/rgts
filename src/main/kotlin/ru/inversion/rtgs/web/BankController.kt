@@ -38,7 +38,8 @@ class BankController{
 
     @GetMapping("/all")
     fun getAllBankList() : ResponseEntity<List<BankDTO>>{
-        val bankDTOList: List<BankDTO> = bankService!!.getAllBanksFullInformation()?.stream()
+        val bankDTOList: List<BankDTO> = bankService!!.getAllBanksFullInformation()
+                ?.stream()
                 ?.map { p -> bankFacade?.bankToBankDTO(p) }
                 ?.collect(Collectors.toList()) as List<BankDTO>? ?: emptyList()
         return ResponseEntity(bankDTOList, HttpStatus.OK)

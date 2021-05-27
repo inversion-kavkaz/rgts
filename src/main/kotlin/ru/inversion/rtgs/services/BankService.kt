@@ -3,9 +3,7 @@ package ru.inversion.rtgs.services
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import ru.inversion.rtgs.dto.BankDTO
 import ru.inversion.rtgs.entity.RtgsBank
-import ru.inversion.rtgs.facade.BankFacade
 import ru.inversion.rtgs.repository.BankRepository
 
 /**

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*
 import ru.inversion.rtgs.dto.TrnDTO
 import ru.inversion.rtgs.entity.RtgsTrn
 import ru.inversion.rtgs.facade.TrnFacade
+import ru.inversion.rtgs.payload.request.DeleteRequest
 import ru.inversion.rtgs.payload.request.TrnRequest
 import ru.inversion.rtgs.repository.TrnRepository
 import ru.inversion.rtgs.services.TrnService
@@ -49,9 +50,14 @@ class TrnController @Autowired constructor(private val trnSrevice: TrnService,
         return ResponseEntity(trnSrevice.update(trn), HttpStatus.OK)
     }
 
-    @DeleteMapping("delete/{id}")
-    fun deleteTrn(@PathVariable id: Long): ResponseEntity<Any> {
-        trnSrevice.delete(id)
+    @PostMapping("delete")
+    fun deleteTrn(@RequestBody deleteRequest: DeleteRequest,bindingResult: BindingResult): ResponseEntity<Any>? {
+        val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
+        if (!ObjectUtils.isEmpty(errors)) return errors
+
+        deleteRequest.idList?.stream()?.forEach {
+            trnSrevice.delete(it)
+        }
         return ResponseEntity<Any>(HttpStatus.OK)
     }
 

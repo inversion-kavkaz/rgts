@@ -1,5 +1,6 @@
 package ru.inversion.rtgs.entity
 
+import java.math.BigInteger
 import javax.persistence.*
 
 /**
@@ -22,9 +23,8 @@ data class RtgsBank(
         val corrAcc: String? = "",
 
 
-
         @OneToMany(mappedBy = "bank_id", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
         val rtgsUsers: Collection<RtgsUser>? = null
 ){
-        constructor() : this(null,"","","", null) {}
+        constructor() : this(null,"","",null, null) {}
 }

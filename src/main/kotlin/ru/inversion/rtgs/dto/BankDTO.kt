@@ -1,5 +1,7 @@
 package ru.inversion.rtgs.dto
 
+import java.math.BigInteger
+
 /**
  * @author Dmitry Hvastunov
  * @created 21.05.2021
