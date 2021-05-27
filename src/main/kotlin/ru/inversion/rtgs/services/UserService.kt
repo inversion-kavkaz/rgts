@@ -49,7 +49,8 @@ class UserService @Autowired constructor(private val userRepository: UserReposit
                 passwordEncoder.encode(userIn.password),
                 listOf()
                 )
-        user.roles.add(ERole.ROLE_USER)
+        user.roles = userIn.roles!!
+        //user.roles.add(ERole.ROLE_USER)
 
         return try {
             LOG.info("Saving User {} ${userIn.login}" )
