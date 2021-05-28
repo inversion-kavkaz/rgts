@@ -7,7 +7,8 @@ import ru.inversion.rtgs.entity.RtgsTrn
 @Component
 class TrnFacade {
     fun trnToTrnFacade(trn: RtgsTrn): TrnDTO = TrnDTO(
-            trn.id,
+            trn.itrnnum,
+            trn.itrnanum,
             trn.edNo,
             trn.edAuthor,
             trn.edReceiver,
@@ -20,7 +21,7 @@ class TrnFacade {
             trn.payeePersonalAcc,
             trn.payeeINN,
             trn.payeeCorrespAcc,
-            trn.userId,
+            trn.login,
             trn.purpose,
             trn.edDate,
             trn.payerName,

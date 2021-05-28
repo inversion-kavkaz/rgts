@@ -1,6 +1,8 @@
 package ru.inversion.rtgs.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import java.math.BigDecimal
+import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.persistence.Column
 
@@ -12,24 +14,25 @@ import javax.persistence.Column
 
 
 data class TrnDTO (
-        val id: Long?,
+        val itrnnum: Long?,
+        val itrnanum: Long?,
         val edNo: Long?,
         val edAuthor: String?,
         val edReceiver: String?,
-        val transKind: String?,
+        val transKind: Long?,
         val priority: Long? = 1,
-        val sum: Double? = null,
+        val sum: Long? = null,
         val payerPersonalAcc: String?,
         val payerINN: String?,
         val payerCorrespAcc: String?,
         val payeePersonalAcc: String?,
         val payeeINN: String?,
         val payeeCorrespAcc: String?,
-        val userId: Long?,
+        val login: String?,
         val purpose: String?,
         var edDate: LocalDateTime? = null,
         val payerName: String? = null,
         val payeeName: String? = null,
-        val status : Long? = 0,
+        val status : String? = null,
         val currency: String?
         )

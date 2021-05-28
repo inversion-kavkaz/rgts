@@ -8,6 +8,6 @@ package ru.inversion.rtgs.payload.request
 
 data class TrnRequest(
         val date: String,
-        val user_id: Long
+        val login: String
 ){
 }

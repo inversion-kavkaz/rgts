@@ -40,25 +40,31 @@ class TrnController @Autowired constructor(private val trnSrevice: TrnService,
     fun createTrn(@RequestBody trn: @Valid RtgsTrn, bindingResult: BindingResult, principal: Principal): ResponseEntity<Any>? {
         val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
         if (!ObjectUtils.isEmpty(errors)) return errors
-        return ResponseEntity(trnFacade.trnToTrnFacade(trnSrevice.create(trn)), HttpStatus.OK)
+        return ResponseEntity(trnSrevice.create(trn)?.let { trnFacade.trnToTrnFacade(it) }, HttpStatus.OK)
     }
 
-    @PostMapping("/update")
-    fun updateTrn(@RequestBody trn: @Valid RtgsTrn, bindingResult: BindingResult, principal: Principal): ResponseEntity<Any>? {
-        val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
-        if (!ObjectUtils.isEmpty(errors)) return errors
-        return ResponseEntity(trnSrevice.update(trn), HttpStatus.OK)
-    }
+//    @PostMapping("/update")
+//    fun updateTrn(@RequestBody trn: @Valid RtgsTrn, bindingResult: BindingResult, principal: Principal): ResponseEntity<Any>? {
+//        val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
+//        if (!ObjectUtils.isEmpty(errors)) return errors
+//        return ResponseEntity(trnSrevice.update(trn), HttpStatus.OK)
+//    }
 
     @PostMapping("delete")
     fun deleteTrn(@RequestBody deleteRequest: DeleteRequest,bindingResult: BindingResult): ResponseEntity<Any>? {
         val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
         if (!ObjectUtils.isEmpty(errors)) return errors
 
+        var retStat = ""
         deleteRequest.idList?.stream()?.forEach {
-            trnSrevice.delete(it)
+            val status = trnSrevice.delete(it)
+            if (status == null || status.startsWith("ERROR"))
+                retStat = it.toString()
         }
-        return ResponseEntity<Any>(HttpStatus.OK)
+        if(retStat.isNullOrEmpty())
+            return ResponseEntity(HttpStatus.CONFLICT)
+        else
+            return ResponseEntity<Any>(HttpStatus.OK)
     }
 
     @PostMapping("/getAll")

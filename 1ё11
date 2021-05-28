@@ -1,0 +1,92 @@
+declare
+  res varchar2(300);
+  errmsg varchar2(1024);
+
+  bo1 number := 2;
+  bo2 number := 0;
+  ddoc date := to_date('26.05.2021','dd.mm.rrrr');
+  dreg date := sysdate;
+  dtran date := sysdate;
+  accd varchar2(100) := '30109810100000000028';
+  accc varchar2(100) := '30120810600000000015';
+  pay_acc varchar2(100) := 'TR12345';
+  pay_name varchar2(300) := 'Payer #1 Mestafa';
+  rec_acc varchar2(100) := 'TR67890';
+  rec_name varchar2(300) := 'Receiver #1 Alibaba';
+  purp varchar2(210) := 'Test payment purpose';
+  num number := 333;
+  summa number := 123.45;
+  curd varchar2(3) := 'RUR';
+  curc varchar2(3) := 'RUR';
+  pprior number := 3;
+  reg_user varchar2(100) := 'XXI';
+
+  trnnum number;
+  trnanum number;
+begin
+    Res:=IDOC_REG.Register ( ErrorMsg => ErrMsg,                           -- Сообщение об ошибке для возврата
+                        OpType        =>  bo1,                  -- Тип операции
+                        RegDate       =>  ddoc,                               -- Дата регистрации
+                        PayerAcc      =>  accd,                           -- Счет дебета
+                        RecipientAcc  =>  rec_acc,                           -- Счет получателя
+                        Summa         =>  summa,                   -- Сумма, если документ нац.вал. то это сумма в рублях
+                        DocDate       =>  ddoc,                  -- Дата документа
+                        Purpose       =>  purp,     -- Назначение платежа
+                        DocNum        =>  num,      -- Номер документа
+--                      BatNum        =>  null,      -- Номер пачки
+                        ValDate       =>  dtran,                  -- Дата платежа (валютирования)
+                        Priority      =>  pprior, -- Очередность платежа
+--                      CorAccO       =>  korsch,  -- Наш корсчет
+--                      MFOa          =>  bik_pol,     -- Код МФО/МСО/КУ Банка-корреспондента
+--                      CorAccA       =>  bik_pol,  -- Кор.Счет Банка-корреспондента
+--                      CorAccAName   =>  bank_pol,   -- Название Банка-корреспондента
+                        RecipientName =>  rec_name,     -- Наименование счета получателя
+--                      INNA          =>  inn_pol,     -- ИНН корреспондента
+                        Client_Name   =>  pay_name, -- Наименование клиента нашего банка
+--                      Client_INN    =>  inn_plat,  -- ИНН клиента нашего банка
+                        cDocCurrency  =>  curd,              -- Валюта документа (суммы)
+                        bIgnoreRB     =>  FALSE,              -- Флаг: игнорировать возникновение красного сальдо
+--                      Client_KPP    =>  '0',  -- КПП клиента нашего банка
+--                      KPPA          =>  kpp_pol,        -- КПП корреспондента
+--                      rDeptInfo     =>  DeptInfo,            -- Ведомственная информация
+                        cIDOpen       =>  reg_user,                 -- Кто зарегистрировал
+--                      Client_RBIC   =>  bikplat,     -- БИК плательщика
+                        Client_Acc    =>  pay_acc,              -- Счет плательщика
+                        Transit_Acc   =>  accc,              -- Транзитный счет получателя, кредит в проводке
+                        CorAccACity   =>  '',    -- Насел. пункт и его тип банка-корреспондента
+                        PayerCur      =>  curd,              -- Валюта счета плательщика
+                        RecipientCur  =>  curc              -- Валюта счета получателя
+                        );
+    if Res !='Ok' then
+      dbms_output.put_line('ERROR: '||Res||' - '||ErrMsg);
+      rollback;
+    else
+      dbms_output.put_line('OK');
+      trnnum := IDOC_REG.GetLastDocID;
+      trnanum := 0;
+      commit;
+      dbms_output.put_line('Документ зарегистрирован с num/anum = '||trnnum||'/'||trnanum);
+    end if;
+end;
+
+
+    p_bo1 number := bo1;
+    p_bo2 number := bo2;
+    p_ddoc date := ddoc;
+    p_dreg date default sysdate := dreg;
+    p_dtran date default sysdate := dtran;
+    p_accd varchar2(100) := accd;
+    p_accc varchar2(100) := accc;
+    p_pay_acc varchar2(100) := pay_acc;
+    p_pay_name varchar2(300) := pay_name;
+    p_rec_acc varchar2(100) := rec_acc;
+    p_rec_name varchar2(300) := rec_name;
+    p_purp varchar2(210) := purp;
+    p_num number := num;
+    p_summa number := summa;
+    p_curd varchar2(3) := curd;
+    p_curc varchar2(3) := curc;
+    p_pprior number := pprior;
+    p_reg_user varchar2(100) := reg_user;
+
+    bo1,bo2,ddoc,dreg,dtran,accd,accc,pay_acc,pay_name,rec_acc,rec_name,purp,num,summa,curd,curc,pprior,reg_user,

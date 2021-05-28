@@ -2,76 +2,69 @@ package ru.inversion.rtgs.entity
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import lombok.Data
+import java.io.Serializable
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import javax.persistence.*
+import kotlin.jvm.Transient
 
 @Data
 @Entity
+@Table(name = "trn", schema = "xxi")
 data class RtgsTrn(
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val id: Long?,
+        //@GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Id @Column(name = "itrnnum") val itrnnum: Long?,
+        @Column(name = "itrnanum") val itrnanum: Long? = null,
         /**Номер ЭС в течение опердня.*/
-        @Column(nullable = false)
-        val edNo: Long?,
+        @Column(name = "ITRNDOCNUM") val edNo: Long?,
         /**Уникальный идентификатор составителя ЭС */
-        @Column(nullable = false, updatable = false)
-        val edAuthor: String?,
+        @Column(name = "CTRNMFOO") val edAuthor: String?,
         /**Уникальный идентификатор получателя ЭС */
-        @Column(nullable = false)
+        @Column(name = "CTRNMFOA", insertable = false, updatable = false)
         val edReceiver: String?,
         /**Вид операции*/
-        val transKind: String?,
+        @Column(name = "ITRNTYPE") val transKind: Long?,
         /**Очередность платежа*/
-        val priority: Long? = 1,
-
+        @Column(name = "ITRNPRIORITY") val priority: Long? = 1,
         /**Сумма платежа*/
-        @Column(nullable = false)
-        val sum: Double? = null,
-
+        @Column(name = "MTRNSUM") val sum: Long? = null,
         /**Номер счета плательщика*/
-        @Column(nullable = false)
-        val payerPersonalAcc: String?,
+        @Column(name = "CTRNCLIENT_ACC") val payerPersonalAcc: String?,
         /**ИНН плательщика*/
-        @Column(nullable = false)
+        @Column(name = "CTRNMFOO", insertable = false, updatable = false)
         val payerINN: String?,
         /**Номер счета банка плательщика */
-        @Column(nullable = false)
-        val payerCorrespAcc: String?,
-
+        @Column(name = "CTRNACCD") val payerCorrespAcc: String?,
         /**Номер счета получателя*/
-        @Column(nullable = false)
-        val payeePersonalAcc: String?,
+        @Column(name = "CTRNACCA") val payeePersonalAcc: String?,
         /**ИНН получателя*/
-        @Column(nullable = false)
-        val payeeINN: String?,
+        @Column(name = "CTRNMFOA") val payeeINN: String?,
         /**Номер счета банка получателя */
-        @Column(nullable = false)
-        val payeeCorrespAcc: String?,
+        @Column(name = "CTRNACCC") val payeeCorrespAcc: String?,
         /**Id отправителя из таблицы сотрудников банка */
-        @Column(nullable = false, updatable = false)
-        val userId: Long?,
+        @Column(name = "CTRNIDOPEN") val login: String?,
         /**Назначение платежа */
-        val purpose: String?,
+        @Column(name = "CTRNPURP") val purpose: String?,
         /**наименование плательшика*/
-        val payerName: String? = null,
+        @Column(name = "CTRNCLIENT_NAME") val payerName: String? = null,
         /**наименование получателя*/
-        val payeeName: String? = null,
+        @Column(name = "CTRNOWNA") val payeeName: String? = null,
         /**Дата составления ЭС*/
-        @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
-        @Column(updatable = false)
+        @Column(name = "DTRNDOC")
+        //@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX", shape = JsonFormat.Shape.STRING)
         var edDate: LocalDateTime? = null,
+
         /**Статус документа*/
-        @Column(updatable = false)
-        val status: Long? = 0,
+        @Column(name = "CTRNSTATE1") val status: String? = null,
         /**Валюта платежа*/
-        @Column(nullable = false)
-        val currency: String? = "",
+        @Column(name = "CTRNCUR") val currency: String? = "",
         /**Результат выполнения транзакции*/
+        @Transient
         val result: String? = null
 ) {
 
     constructor() : this(
+            null,
             null,
             null,
             null,
