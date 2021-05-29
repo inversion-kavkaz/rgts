@@ -16,7 +16,7 @@ data class RtgsTrn(
         @Id @Column(name = "itrnnum") val itrnnum: Long?,
         @Column(name = "itrnanum") val itrnanum: Long? = null,
         /**Номер ЭС в течение опердня.*/
-        @Column(name = "ITRNDOCNUM") val edNo: Long?,
+        @Column(name = "ITRNDOCNUM") var edNo: Long?,
         /**Уникальный идентификатор составителя ЭС */
         @Column(name = "CTRNMFOO") val edAuthor: String?,
         /**Уникальный идентификатор получателя ЭС */

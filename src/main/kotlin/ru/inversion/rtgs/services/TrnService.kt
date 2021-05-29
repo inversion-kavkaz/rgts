@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
 import ru.inversion.rtgs.entity.RtgsTrn
 import ru.inversion.rtgs.facade.TrnFacade
+import ru.inversion.rtgs.payload.reponse.TrnCreateResponse
 import ru.inversion.rtgs.payload.request.TrnRequest
 import ru.inversion.rtgs.repository.TrnRepository
 import java.sql.CallableStatement
@@ -29,7 +30,7 @@ class TrnService @Autowired constructor(
     @Autowired
     private val jdbcTemplate: JdbcTemplate? = null
 
-    fun create(trn: RtgsTrn): RtgsTrn? {
+    fun create(trn: RtgsTrn): TrnCreateResponse {
 
         val connection = jdbcTemplate?.getDataSource()?.getConnection();
         val callableStatement: CallableStatement? = connection?.prepareCall("{call ? := ${CALL_CREATE}") ?: null
@@ -43,7 +44,7 @@ class TrnService @Autowired constructor(
         callableStatement?.setString(9, trn.payerPersonalAcc)
         callableStatement?.setString(10, trn.payeeName)
         callableStatement?.setString(11, trn.purpose)
-
+        if(trn.edNo == null) trn.edNo = -1
         callableStatement?.setLong(12, trn.edNo!!)
 
         callableStatement?.setLong(13, trn.sum!!)
@@ -63,14 +64,21 @@ class TrnService @Autowired constructor(
         val trnnum: Long? = callableStatement?.getLong(18)
         val trnanum: Long? = callableStatement?.getLong(19)
 
-        if (result != null && result.startsWith("SUCCESS"))
-            return trnRepository.getLastTransaction(trnnum, trnanum)
-        else return null
+        if (result != null && result.startsWith("SUCCESS")){
+            return TrnCreateResponse(trnRepository.getLastTransaction(trnnum, trnanum), "Transaction is registered")
+        }
+        else return TrnCreateResponse(null, result)
     }
 
-//    fun update(trn : RtgsTrn) : RtgsTrn {
-//        return RtgsTrn()
-//    }
+    fun update(trn : RtgsTrn) : TrnCreateResponse {
+        val resString: String?
+        if(trn.itrnnum != null) {
+            resString = delete(trn.itrnnum)
+            if(!resString.isNullOrEmpty() && resString.startsWith("SUCCESS"))
+                return create(trn)
+        }
+        return TrnCreateResponse(null, "resString")
+    }
 
     fun delete(trnId: Long): String? {
         val connection = jdbcTemplate?.getDataSource()?.getConnection();

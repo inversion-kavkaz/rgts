@@ -7,6 +7,7 @@ server:
   port: 5000
 spring:
   datasource:
+#    url: jdbc:oracle:thin:@192.168.0.25:1521:odb12
     url: jdbc:oracle:thin:@172.16.0.105:1521:odb12
     username: XXI
     password: NEW8I
