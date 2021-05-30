@@ -77,7 +77,7 @@ class TrnService @Autowired constructor(
             if(!resString.isNullOrEmpty() && resString.startsWith("SUCCESS"))
                 return create(trn)
         }
-        return TrnCreateResponse(null, "resString")
+        return TrnCreateResponse(null, "Update error")
     }
 
     fun delete(trnId: Long): String? {
