@@ -11,6 +11,7 @@ import kotlin.jvm.Transient
 @Data
 @Entity
 @Table(name = "trn", schema = "xxi")
+
 data class RtgsTrn(
         //@GeneratedValue(strategy = GenerationType.IDENTITY)
         @Id @Column(name = "itrnnum") val itrnnum: Long?,
