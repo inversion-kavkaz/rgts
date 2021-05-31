@@ -7,19 +7,16 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.util.ObjectUtils
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
-import ru.inversion.rtgs.dto.TrnDTO
 import ru.inversion.rtgs.entity.RtgsTrn
 import ru.inversion.rtgs.facade.TrnFacade
 import ru.inversion.rtgs.payload.request.DeleteRequest
+import ru.inversion.rtgs.payload.request.TrnFilterRequest
 import ru.inversion.rtgs.payload.request.TrnRequest
 import ru.inversion.rtgs.repository.TrnRepository
 import ru.inversion.rtgs.services.TrnService
 import ru.inversion.rtgs.validations.ResponseErrorValidation
 import java.security.Principal
-import java.time.LocalDate
-import java.util.stream.Collectors
 import javax.validation.Valid
-import javax.validation.constraints.NotEmpty
 
 /**
  * @author Dmitry Hvastunov
@@ -69,5 +66,15 @@ class TrnController @Autowired constructor(private val trnSrevice: TrnService,
         if (!ObjectUtils.isEmpty(errors)) return errors
         return ResponseEntity(trnSrevice.getAllUserTrnByDate(trnReq),HttpStatus.OK)
     }
+
+    @PostMapping("/getFilteringTrn")
+    fun getAllByFilter(@RequestBody trnReq: TrnFilterRequest, bindingResult: BindingResult, principal: Principal): ResponseEntity<Any>? {
+        val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
+        if (!ObjectUtils.isEmpty(errors)) return errors
+
+        return ResponseEntity(trnSrevice.getAllUserTrnByFilter(trnReq),HttpStatus.OK)
+    }
+
+
 
 }

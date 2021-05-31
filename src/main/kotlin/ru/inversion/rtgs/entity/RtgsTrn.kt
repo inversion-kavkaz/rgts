@@ -1,10 +1,9 @@
 package ru.inversion.rtgs.entity
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import lombok.Data
-import java.io.Serializable
-import java.math.BigDecimal
+import java.sql.Date
 import java.time.LocalDateTime
+import java.time.ZoneId
 import javax.persistence.*
 import kotlin.jvm.Transient
 
@@ -53,7 +52,7 @@ data class RtgsTrn(
         /**Дата составления ЭС*/
         @Column(name = "DTRNDOC")
         //@JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX", shape = JsonFormat.Shape.STRING)
-        var edDate: LocalDateTime? = null,
+        var edDate: Date? = null,
 
         /**Статус документа*/
         @Column(name = "CTRNSTATE1") val status: String? = null,
@@ -86,7 +85,7 @@ data class RtgsTrn(
 
     @PrePersist
     fun onCreate() {
-        this.edDate = LocalDateTime.now()
+        this.edDate = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()) as Date?
     }
 
 }

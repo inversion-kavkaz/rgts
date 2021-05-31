@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.*
 import javax.persistence.Column
 
 /**
@@ -30,7 +31,7 @@ data class TrnDTO (
         val payeeCorrespAcc: String?,
         val login: String?,
         val purpose: String?,
-        var edDate: LocalDateTime? = null,
+        var edDate: Date? = null,
         val payerName: String? = null,
         val payeeName: String? = null,
         val status : String? = null,
