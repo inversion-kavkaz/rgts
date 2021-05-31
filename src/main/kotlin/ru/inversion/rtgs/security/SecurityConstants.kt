@@ -6,5 +6,5 @@ object SecurityConstants {
     const val TOKEN_PREFIX = "Inversion "
     const val HEADER_STRING = "Authorization"
     const val CONTENT_TYPE = "application/json"
-    const val EXPIRATION_TIME: Long = 3_600_000 //60min
+    const val EXPIRATION_TIME: Long = 3_600_000_0 //600min
 }
