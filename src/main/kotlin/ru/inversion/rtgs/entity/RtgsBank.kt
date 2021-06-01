@@ -14,12 +14,12 @@ data class RtgsBank(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null,
-        @Column(nullable = false,unique = true)
+        @Column(nullable = false)
         val bik: String? = "",
         val bankAdress: String? = "",
         @Column(nullable = false)
         val bankName: String? = "",
-        @Column(nullable = false,unique = true,length = 20)
+        @Column(nullable = false,unique = true,length = 25)
         val corrAcc: String? = "",
 
 

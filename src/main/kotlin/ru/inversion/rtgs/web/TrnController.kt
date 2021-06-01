@@ -9,7 +9,9 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import ru.inversion.rtgs.entity.RtgsTrn
 import ru.inversion.rtgs.facade.TrnFacade
+import ru.inversion.rtgs.payload.reponse.TrnAffirmResponse
 import ru.inversion.rtgs.payload.request.DeleteRequest
+import ru.inversion.rtgs.payload.request.TrnAffirmRequest
 import ru.inversion.rtgs.payload.request.TrnFilterRequest
 import ru.inversion.rtgs.payload.request.TrnRequest
 import ru.inversion.rtgs.repository.TrnRepository
@@ -71,9 +73,22 @@ class TrnController @Autowired constructor(private val trnSrevice: TrnService,
     fun getAllByFilter(@RequestBody trnReq: TrnFilterRequest, bindingResult: BindingResult, principal: Principal): ResponseEntity<Any>? {
         val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
         if (!ObjectUtils.isEmpty(errors)) return errors
-
         return ResponseEntity(trnSrevice.getAllUserTrnByFilter(trnReq),HttpStatus.OK)
     }
+
+    @PostMapping("/affirm")
+    fun affirmTrn(@RequestBody affirmList: TrnAffirmRequest, bindingResult: BindingResult, principal: Principal): ResponseEntity<Any>? {
+        val errors = responseErrorValidation!!.mapValidationService(bindingResult!!)
+        if (!ObjectUtils.isEmpty(errors)) return errors
+        val trnAffirmErrorList: MutableList<TrnAffirmResponse> = mutableListOf()
+        affirmList.idList?.stream()?.forEach {
+                trnAffirmErrorList.add(trnSrevice.affirmTransaction(it))
+        }
+        return ResponseEntity<Any>(trnAffirmErrorList,HttpStatus.OK)
+
+    }
+
+
 
 
 

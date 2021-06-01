@@ -2,17 +2,16 @@ package ru.inversion.rtgs.services
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Service
 import ru.inversion.rtgs.entity.RtgsTrn
 import ru.inversion.rtgs.facade.TrnFacade
+import ru.inversion.rtgs.payload.reponse.TrnAffirmResponse
 import ru.inversion.rtgs.payload.reponse.TrnCreateResponse
 import ru.inversion.rtgs.payload.request.TrnFilterRequest
 import ru.inversion.rtgs.payload.request.TrnRequest
 import ru.inversion.rtgs.repository.TrnRepository
+import ru.inversion.rtgs.services.utils.CustomerRowMapper
 import java.sql.CallableStatement
-import java.sql.ResultSet
-import java.sql.SQLException
 import java.time.LocalDate
 
 
@@ -30,6 +29,7 @@ class TrnService @Autowired constructor(
 
     val CALL_CREATE = "rtgs_package.reg_transaction(?,?,?,null,null,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
     val CALL_DELETE = "rtgs_package.remove_transaction(?)"
+    val CALL_AFFIRM = "rtgs_package.affirm_transaction(?)"
 
     @Autowired
     private val jdbcTemplate: JdbcTemplate? = null
@@ -112,49 +112,28 @@ class TrnService @Autowired constructor(
     fun getAllUserTrnByFilter(trnReq: TrnFilterRequest): List<RtgsTrn?> {
         var filterString = ""
 
-        if (!trnReq.filter.payerCorrespAcc.isNullOrEmpty()) filterString = " and CTRNACCD = '${trnReq.filter.payerCorrespAcc}'"
+        if (!trnReq.filter.payerCorrespAcc.isNullOrEmpty()) filterString = " CTRNACCD = '${trnReq.filter.payerCorrespAcc}'"
         if (!trnReq.filter.login.isNullOrEmpty()) filterString += " and CTRNIDOPEN = '${trnReq.filter.login}'"
 
 
-        var SQL = "select * from trn where CTRNIDAFFIRM is null and rownum < 50 ${filterString}"
+        var SQL = "select * from trn where   ${filterString} order by DTRNDOC desc"
 
-        val newRtgsList: List<RtgsTrn?> = jdbcTemplate?.query(
-                SQL,
-                CustomerRowMapper()
-        ) as List<RtgsTrn?>
-
-        return newRtgsList
+        return jdbcTemplate?.query(SQL, CustomerRowMapper()) as List<RtgsTrn?>
     }
 
-}
+    fun affirmTransaction(itrnnum: Long): TrnAffirmResponse {
+        val connection = jdbcTemplate?.getDataSource()?.getConnection();
+        val callableStatement: CallableStatement? = connection?.prepareCall("{call ? := ${CALL_AFFIRM}") ?: null
+        callableStatement?.setLong(2, itrnnum)
+        callableStatement?.registerOutParameter(1, java.sql.Types.VARCHAR)
+        callableStatement?.executeUpdate()
+        val result = callableStatement?.getString(1)
+        if (result != null && result.startsWith("SUCCESS")) {
+            return TrnAffirmResponse( "SUCCESS",result,itrnnum)
+        } else return TrnAffirmResponse("ERROR",result,itrnnum)
 
-class CustomerRowMapper : RowMapper<RtgsTrn?> {
-    @Throws(SQLException::class)
-    override fun mapRow(rs: ResultSet, rowNum: Int): RtgsTrn {
-        val trn = RtgsTrn(
-                rs.getLong("itrnnum"),
-                rs.getLong("itrnanum"),
-                rs.getLong("ITRNDOCNUM"),
-                rs.getString("CTRNMFOO"),
-                rs.getString("CTRNMFOA"),
-                rs.getLong("ITRNTYPE"),
-                rs.getLong("ITRNPRIORITY"),
-                rs.getLong("MTRNSUM"),
-                rs.getString("CTRNCLIENT_ACC"),
-                rs.getString("CTRNMFOO"),
-                rs.getString("CTRNACCD"),
-                rs.getString("CTRNACCA"),
-                rs.getString("CTRNMFOA"),
-                rs.getString("CTRNACCC"),
-                rs.getString("CTRNIDOPEN"),
-                rs.getString("CTRNPURP"),
-                rs.getString("CTRNCLIENT_NAME"),
-                rs.getString("CTRNOWNA"),
-                rs.getDate("DTRNDOC"),
-                rs.getString("CTRNSTATE1"),
-                rs.getString("CTRNCUR")
-        )
-        return trn
     }
 }
+
+
 

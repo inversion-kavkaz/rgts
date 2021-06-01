@@ -13,5 +13,5 @@ data class BankDTO(
         val bik: String?,
         val bankAdress: String? = "",
         val bankName : String? = "",
-        val corrAcc : String? = ""
+        val corrAcc : String? = null
 )
