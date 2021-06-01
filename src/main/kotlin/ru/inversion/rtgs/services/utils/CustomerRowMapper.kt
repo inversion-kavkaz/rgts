@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.RowMapper
 import ru.inversion.rtgs.entity.RtgsTrn
 import java.sql.ResultSet
 import java.sql.SQLException
+import kotlin.jvm.Throws
 
 /**
  * @author Dmitry Hvastunov

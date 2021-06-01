@@ -38,9 +38,9 @@ class BalanceService {
         callableStatement?.executeUpdate()
 
         var balResp = BalanceResponse(
-                callableStatement?.getString(4),
-                callableStatement?.getString(5),
-                callableStatement?.getString(6)
+                callableStatement?.getString(4)?.replace(",",".")?.toBigDecimalOrNull() ,
+                callableStatement?.getString(5)?.replace(",",".")?.toBigDecimalOrNull() ,
+                callableStatement?.getString(6)?.replace(",",".")?.toBigDecimalOrNull()
         )
 
         return balResp
