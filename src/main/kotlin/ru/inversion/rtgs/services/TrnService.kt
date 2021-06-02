@@ -110,15 +110,26 @@ class TrnService @Autowired constructor(
     }
 
     fun getAllUserTrnByFilter(trnReq: TrnFilterRequest): List<RtgsTrn?> {
+
         var filterString = ""
 
+
+        val startDate = if(trnReq.filter.startDate != null) trnReq.filter.startDate.toString().substring(0,10) else ""
+        val endDate = if(trnReq.filter.endDate != null) trnReq.filter.endDate.toString().substring(0,10) else ""
+
         if (!trnReq.filter.payerCorrespAcc.isNullOrEmpty()) filterString = " CTRNACCD = '${trnReq.filter.payerCorrespAcc}'"
+        if (!trnReq.filter.payeeCorrespAcc.isNullOrEmpty()) filterString = " CTRNACCC = '${trnReq.filter.payeeCorrespAcc}'"
         if (!trnReq.filter.login.isNullOrEmpty()) filterString += " and CTRNIDOPEN = '${trnReq.filter.login}'"
+        if (trnReq.filter.status != null) filterString += " and CTRNSTATE1 = ${trnReq.filter.status}"
+
+        if (!startDate.isNullOrEmpty() && !endDate.isNullOrEmpty()) filterString += " and DTRNDOC between to_date('${startDate}', 'yyyy-mm-dd') and to_date('${endDate}', 'yyyy-mm-dd')"
 
 
-        var SQL = "select * from trn where   ${filterString} order by DTRNDOC desc"
+        var SQL = "select rownum r, t.* from (select * from trn ${if(!filterString.isEmpty()) "where" else ""}   ${filterString} order by DTRNDOC desc) t "
+        val SQL_WRAPPER = "select * from ( ${SQL} ) where r between ${trnReq.pageNum} * ${trnReq.pageSize} " +
+                "and ((${trnReq.pageNum} + 1) * ${trnReq.pageSize}) - 1"
 
-        return jdbcTemplate?.query(SQL, CustomerRowMapper()) as List<RtgsTrn?>
+        return jdbcTemplate?.query(SQL_WRAPPER, CustomerRowMapper()) as List<RtgsTrn?>
     }
 
     fun affirmTransaction(itrnnum: Long): TrnAffirmResponse {

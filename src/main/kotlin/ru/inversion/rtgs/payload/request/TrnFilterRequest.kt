@@ -7,6 +7,8 @@ package ru.inversion.rtgs.payload.request
  */
 data class TrnFilterRequest(
         val filter: Filter,
-        val login: String
+        val login: String,
+        val pageNum: Int,
+        val pageSize: Int
 ){
 }

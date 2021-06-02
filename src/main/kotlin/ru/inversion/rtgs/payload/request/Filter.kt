@@ -4,8 +4,8 @@ import java.time.LocalDate
 import java.util.*
 
 data class Filter (
-    val startDate: Date?,
-    val endDate: Date?,
+    val startDate: LocalDate?,
+    val endDate: LocalDate?,
     val login: String?,
     val sum: Long?,
     val payerPersonalAcc: String?,
