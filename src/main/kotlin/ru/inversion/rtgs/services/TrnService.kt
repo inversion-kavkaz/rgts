@@ -1,14 +1,17 @@
 package ru.inversion.rtgs.services
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
 import ru.inversion.rtgs.entity.RtgsTrn
 import ru.inversion.rtgs.facade.TrnFacade
-import ru.inversion.rtgs.payload.reponse.TrnAffirmResponse
-import ru.inversion.rtgs.payload.reponse.TrnCreateResponse
+import ru.inversion.rtgs.payload.response.TrnAffirmResponse
+import ru.inversion.rtgs.payload.response.TrnCreateResponse
 import ru.inversion.rtgs.payload.request.TrnFilterRequest
 import ru.inversion.rtgs.payload.request.TrnRequest
+import ru.inversion.rtgs.payload.response.TrnFilterResponse
 import ru.inversion.rtgs.repository.TrnRepository
 import ru.inversion.rtgs.services.utils.CustomerRowMapper
 import java.sql.CallableStatement
@@ -68,6 +71,8 @@ class TrnService @Autowired constructor(
         val trnnum: Long? = callableStatement?.getLong(18)
         val trnanum: Long? = callableStatement?.getLong(19)
 
+        connection?.close()
+
         if (result != null && result.startsWith("SUCCESS")) {
             return TrnCreateResponse(trnRepository.getLastTransaction(trnnum, trnanum), "Transaction is registered")
         } else return TrnCreateResponse(null, result)
@@ -91,7 +96,7 @@ class TrnService @Autowired constructor(
         val resultSet = callableStatement?.executeUpdate()
 
         val result = callableStatement?.getString(1)
-
+        connection?.close()
         return result
 
 
@@ -109,9 +114,10 @@ class TrnService @Autowired constructor(
         return res
     }
 
-    fun getAllUserTrnByFilter(trnReq: TrnFilterRequest): List<RtgsTrn?> {
+    fun getAllUserTrnByFilter(trnReq: TrnFilterRequest): TrnFilterResponse {
 
         var filterString = ""
+        val sortString = if(!trnReq.sort.isNullOrEmpty()) " order by ${convertColumnNames(trnReq.sort)}" else  ""
 
 
         val startDate = if(trnReq.filter.startDate != null) trnReq.filter.startDate.toString().substring(0,10) else ""
@@ -125,11 +131,29 @@ class TrnService @Autowired constructor(
         if (!startDate.isNullOrEmpty() && !endDate.isNullOrEmpty()) filterString += " and DTRNDOC between to_date('${startDate}', 'yyyy-mm-dd') and to_date('${endDate}', 'yyyy-mm-dd')"
 
 
-        var SQL = "select rownum r, t.* from (select * from trn ${if(!filterString.isEmpty()) "where" else ""}   ${filterString} order by DTRNDOC desc) t "
+        var SQL = "select rownum r, t.* from (select * from trn ${if(!filterString.isEmpty()) "where" else ""}   ${filterString} ${sortString}) t "
         val SQL_WRAPPER = "select * from ( ${SQL} ) where r between ${trnReq.pageNum} * ${trnReq.pageSize} " +
                 "and ((${trnReq.pageNum} + 1) * ${trnReq.pageSize}) - 1"
+        val SQL_COUNTER = "select count(*) from (${SQL})"
+        val counter = jdbcTemplate?.queryForObject(SQL_COUNTER, Long::class.java)
 
-        return jdbcTemplate?.query(SQL_WRAPPER, CustomerRowMapper()) as List<RtgsTrn?>
+        return  TrnFilterResponse(jdbcTemplate?.query(SQL_WRAPPER, CustomerRowMapper()) as List<RtgsTrn?>, counter)
+    }
+
+    private fun convertColumnNames(sort: String?): String? {
+        return sort?.replace("","")
+                ?.replace("status","CTRNSTATE1")
+                ?.replace("edNo","ITRNDOCNUM")
+                ?.replace("edDate","DTRNDOC")
+                ?.replace("payeePersonalAcc","CTRNACCA")
+                ?.replace("payerPersonalAcc","CTRNCLIENT_ACC")
+                ?.replace("currency","CTRNCUR")
+                ?.replace("payeeName","CTRNOWNA")
+                ?.replace("payerName","CTRNCLIENT_NAME")
+                ?.replace("sum","MTRNSUM")
+                ?.replace("payeeINN","CTRNMFOA")
+                ?.replace("payerINN","CTRNMFOO")
+
     }
 
     fun affirmTransaction(itrnnum: Long): TrnAffirmResponse {
@@ -139,6 +163,7 @@ class TrnService @Autowired constructor(
         callableStatement?.registerOutParameter(1, java.sql.Types.VARCHAR)
         callableStatement?.executeUpdate()
         val result = callableStatement?.getString(1)
+        connection?.close()
         if (result != null && result.startsWith("SUCCESS")) {
             return TrnAffirmResponse( "SUCCESS",result,itrnnum)
         } else return TrnAffirmResponse("ERROR",result,itrnnum)

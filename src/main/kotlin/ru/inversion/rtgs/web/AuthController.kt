@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*
 import ru.inversion.rtgs.dto.BankDTO
 import ru.inversion.rtgs.facade.BankFacade
 import ru.inversion.rtgs.facade.UserFacade
-import ru.inversion.rtgs.payload.reponse.JWTTokenSuccessResponse
-import ru.inversion.rtgs.payload.reponse.MessageResponse
+import ru.inversion.rtgs.payload.response.JWTTokenSuccessResponse
+import ru.inversion.rtgs.payload.response.MessageResponse
 import ru.inversion.rtgs.payload.request.LoginRequest
 import ru.inversion.rtgs.payload.request.SignupRequest
 import ru.inversion.rtgs.security.JWTTokenProvider

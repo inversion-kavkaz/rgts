@@ -9,7 +9,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import ru.inversion.rtgs.entity.RtgsTrn
 import ru.inversion.rtgs.facade.TrnFacade
-import ru.inversion.rtgs.payload.reponse.TrnAffirmResponse
+import ru.inversion.rtgs.payload.response.TrnAffirmResponse
 import ru.inversion.rtgs.payload.request.DeleteRequest
 import ru.inversion.rtgs.payload.request.TrnAffirmRequest
 import ru.inversion.rtgs.payload.request.TrnFilterRequest

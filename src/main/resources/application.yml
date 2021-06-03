@@ -12,6 +12,16 @@ spring:
     username: XXI
     password: NEW8I
     driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      connection-init-sql: SELECT 1 from dual
+      connection-test-query: SELECT 1 from dual
+      auto-commit: true
+      connection-timeout: 120000
+      idle-timeout: 600000
+      leak-detection-threshold: 60000
+      max-lifetime: 1800000
+      maximum-pool-size: 10
+      validation-timeout: 5000
   jpa:
     hibernate:
       ddl-auto: none
@@ -21,6 +31,8 @@ spring:
 logging:
   file:
     name: rtgslog.log
+#  level:
+#    com.zaxxer.hikari.pool.HikariPool: DEBUG
 
 ProjectProperties:
   expiresIn: 3600

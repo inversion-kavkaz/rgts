@@ -9,6 +9,7 @@ data class TrnFilterRequest(
         val filter: Filter,
         val login: String,
         val pageNum: Int,
-        val pageSize: Int
+        val pageSize: Int,
+        val sort: String?
 ){
 }

@@ -3,9 +3,8 @@ package ru.inversion.rtgs.services
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
-import ru.inversion.rtgs.payload.reponse.BalanceResponse
+import ru.inversion.rtgs.payload.response.BalanceResponse
 import java.sql.CallableStatement
-import java.util.*
 
 /**
  * @author Dmitry Hvastunov
@@ -42,7 +41,7 @@ class BalanceService {
                 callableStatement?.getString(5)?.replace(",",".")?.toBigDecimalOrNull() ,
                 callableStatement?.getString(6)?.replace(",",".")?.toBigDecimalOrNull()
         )
-
+        connection?.close()
         return balResp
 
     }

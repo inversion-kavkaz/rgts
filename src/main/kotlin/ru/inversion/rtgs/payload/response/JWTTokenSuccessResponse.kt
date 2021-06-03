@@ -1,4 +1,4 @@
-package ru.inversion.rtgs.payload.reponse
+package ru.inversion.rtgs.payload.response
 
 import lombok.AllArgsConstructor
 import lombok.Data
