@@ -141,7 +141,7 @@ class TrnService @Autowired constructor(
     }
 
     private fun convertColumnNames(sort: String?): String? {
-        return sort?.replace("","")
+        return sort?.replace("purpose","CTRNPURP")
                 ?.replace("status","CTRNSTATE1")
                 ?.replace("edNo","ITRNDOCNUM")
                 ?.replace("edDate","DTRNDOC")
