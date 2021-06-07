@@ -120,8 +120,8 @@ class TrnService @Autowired constructor(
         val sortString = if(!trnReq.sort.isNullOrEmpty()) " order by ${convertColumnNames(trnReq.sort)}" else  ""
 
 
-        val startDate = if(trnReq.filter.startDate != null) trnReq.filter.startDate.toString().substring(0,10) else ""
-        val endDate = if(trnReq.filter.endDate != null) trnReq.filter.endDate.toString().substring(0,10) else ""
+        val startDate = if(trnReq.filter.startDate != null) trnReq.filter.startDate.plusDays(1).toString().substring(0,10) else ""
+        val endDate = if(trnReq.filter.endDate != null) trnReq.filter.endDate.plusDays(1).toString().substring(0,10) else ""
 
         if (!trnReq.filter.payerCorrespAcc.isNullOrEmpty()) filterString = " CTRNACCD = '${trnReq.filter.payerCorrespAcc}'"
         if (!trnReq.filter.payeeCorrespAcc.isNullOrEmpty()) filterString = " CTRNACCC = '${trnReq.filter.payeeCorrespAcc}'"
@@ -132,8 +132,8 @@ class TrnService @Autowired constructor(
 
 
         var SQL = "select rownum r, t.* from (select * from trn ${if(!filterString.isEmpty()) "where" else ""}   ${filterString} ${sortString}) t "
-        val SQL_WRAPPER = "select * from ( ${SQL} ) where r between ${trnReq.pageNum} * ${trnReq.pageSize} " +
-                "and ((${trnReq.pageNum} + 1) * ${trnReq.pageSize}) - 1"
+        val SQL_WRAPPER = "select * from ( ${SQL} ) where r between ${trnReq.pageNum} * ${trnReq.pageSize} + 1 " +
+                "and ((${trnReq.pageNum} + 1) * ${trnReq.pageSize}) "
         val SQL_COUNTER = "select count(*) from (${SQL})"
         val counter = jdbcTemplate?.queryForObject(SQL_COUNTER, Long::class.java)
 
